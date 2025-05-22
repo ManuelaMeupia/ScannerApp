@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner</title>
+    <script src="html5-qrcode.min.js"></script>
+    <style>
+        #reader { width: 500px; height: 500px; }
+        .container{
+            margin-left: 450px;
+            background-color: rgb(115, 185, 185);
+            width: 600px;
+            text-align: center;
+            height: 730px;
+        }
+        .btnS{
+            background: rgb(85, 141, 141);
+            border: none;
+            border-radius: 5px;
+        }
+        .btnC{
+            background: rgb(85, 141, 141);
+            border: none;
+            border-radius: 5px; 
+        }
+        .read{
+            display: flex;
+        }
+        .lien{
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Inscription</h2>
+        <form id="Formulaire">
+            <input type="text" id="email" placeholder="Adresse mail" required />
+            <input type="password" id="newPassword" placeholder="Mot de passe" required />
+            <button type="submit" class="btnS">S'inscrire</button>
+        </form>
+        <div id="Enregistrer"></div>
+    
+        <h2>Connexion</h2>
+        <form id="login">
+            <input type="text" id="username" placeholder="Nom d'utilisateur" required />
+            <input type="password" id="password" placeholder="Mot de passe" required />
+            <button type="submit" class="btnC">Se connecter</button>
+        </form>
+        <div id="loginMessage"></div>
+    
+        <h1>Scanner un Code QR</h1>
+        <div id="reader" class="read"></div>
+        <div id="result" class="lien"></div>
+       
+        <script src="https://unpkg.com/html5-qrcode@latest/html5-qrcode.min.js"></script>
+        <script>
+            let scan = false;
+    
+            document.getElementById("Formulaire").addEventListener("submit", function(event) {
+                event.preventDefault();
+                const email = document.getElementById("email").value;
+                const newPassword = document.getElementById("newPassword").value;
+    
+                localStorage.setItem("username", email);
+                localStorage.setItem("password", newPassword);
+                document.getElementById("Enregistrer").innerText = "Inscription réussie !";
+            });
+    
+            document.getElementById("login").addEventListener("submit", function(event) {
+                event.preventDefault();
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+    
+                const nomEnrg = localStorage.getItem("username");
+                const passEnrg = localStorage.getItem("password");
+    
+                if (username === nomEnrg && password === passEnrg) {
+                    document.getElementById("loginMessage").innerText = "Connexion réussie !";
+                    startQrScanner();
+                } else {
+                    document.getElementById("loginMessage").innerText = "Nom d'utilisateur ou mot de passe incorrect.";
+                }
+            });
+    
+            function startQrScanner() {
+                if (scan) return;
+    
+                const html5QrCode = new Html5Qrcode("reader");
+                scan = true;
+    
+                const qrCodeSuccess = (decodeTexte) => {
+                    document.getElementById("result").innerText = `Lien du code QR : ${decodeTexte}`;
+                    html5QrCode.stop().then(() => {
+                        scan = false;
+                    });
+                };
+    
+                const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    config,
+                    qrCodeSuccess
+                ).catch(err => {
+                    console.error("Erreur : ", err);
+                    scan = false;
+                });
+            }
+
+            //document.getElementById("rescan-btn").addEventListener("click", function() {
+                //startQrScanner();
+            //});
+        </script>
+    </div>
+</body>
+</html>
