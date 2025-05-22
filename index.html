@@ -3,140 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Scanner QR CODE</title>
-    <script src="https://unpkg.com/html5-qrcode@latest/html5-qrcode.min.js"></script>
+    <title>Inscription</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #eef2f3;
-            padding: 20px;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 600px;
-            background-color: rgb(115, 185, 185);
-            text-align: center;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background: rgb(85, 141, 141);
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        #reader {
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-            margin: auto;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                width: 100%;
-            }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #eef2f3; padding: 20px; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 10px; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; font-size: 16px; }
+        button { background: rgb(0, 68, 255); color: white; cursor: pointer; }
+        input{
+            background-color: #e9f3f5;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Inscription</h2>
-        <form id="Formulaire">
+        <h2>Créer un compte</h2>
+        <form id="inscription-form">
             <input type="email" id="email" placeholder="Adresse mail" required />
             <input type="password" id="newPassword" placeholder="Mot de passe" required />
             <button type="submit">S'inscrire</button>
-        </form><br>
-        <div id="Enregistrer"></div><br><br>
-
-        <h2>Connexion</h2>
-        <form id="login">
-            <input type="email" id="username" placeholder="Nom d'utilisateur" required />
-            <input type="password" id="password" placeholder="Mot de passe" required />
-            <button type="submit">Se connecter</button>
-        </form><br>
-        <div id="loginMessage"></div><br><br>
-
-        <h1>Scanner un Code QR</h1>
-        <div id="reader"></div>
-        <div id="result"></div>
-
-        <script>
-            let scan = false;
-
-            document.getElementById("Formulaire").addEventListener("submit", function(event) {
-                event.preventDefault();
-                const email = document.getElementById("email").value;
-                const newPassword = document.getElementById("newPassword").value;
-                localStorage.setItem("username", email);
-                localStorage.setItem("password", newPassword);
-                document.getElementById("Enregistrer").innerText = "Inscription réussie !";
-            });
-
-            document.getElementById("login").addEventListener("submit", function(event) {
-                event.preventDefault();
-                const username = document.getElementById("username").value;
-                const password = document.getElementById("password").value;
-                const nomEnrg = localStorage.getItem("username");
-                const passEnrg = localStorage.getItem("password");
-
-                if (username === nomEnrg && password === passEnrg) {
-                    document.getElementById("loginMessage").innerText = "Connexion réussie !";
-                    startQrScanner();
-                } else {
-                    document.getElementById("loginMessage").innerText = "Nom d'utilisateur ou mot de passe incorrect.";
-                }
-            });
-
-            function startQrScanner() {
-                if (scan) return;
-                const html5QrCode = new Html5Qrcode("reader");
-                scan = true;
-
-                const qrCodeSuccess = (decodeTexte) => {
-                    document.getElementById("result").innerText = `Lien du code QR : ${decodeTexte}`;
-                    html5QrCode.stop().then(() => {
-                        scan = false;
-                    });
-                };
-
-                const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-                html5QrCode.start(
-                    { facingMode: "environment" },
-                    config,
-                    qrCodeSuccess
-                ).catch(err => {
-                    console.error("Erreur : ", err);
-                    scan = false;
-                });
-            }
-        </script>
+        </form>
+        <p id="message"></p>
     </div>
+
+    <script>
+        document.getElementById("inscription-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("newPassword").value;
+
+            localStorage.setItem("username", email);
+            localStorage.setItem("password", password);
+            document.getElementById("message").innerText = "Inscription réussie ! Redirection...";
+            
+            setTimeout(() => { window.location.href = "authentification.html"; }, 2000);
+        });
+    </script>
 </body>
 </html>

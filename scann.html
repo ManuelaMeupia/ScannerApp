@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scanner QR</title>
+    <script src="https://unpkg.com/html5-qrcode@latest/html5-qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif; 
+            text-align: center;
+            background-color: #eef2f3; 
+            padding: 20px; 
+        }
+        #reader { 
+            width: 100%; 
+            max-width: 400px; 
+            height: auto; 
+            margin: auto; 
+        }
+        button { 
+            padding: 10px; 
+            background: rgb(85, 141, 141); 
+            border: none; 
+            border-radius: 5px; 
+            color:rgb(0, 0, 241);  
+            font-size: 16px; 
+            cursor: pointer; 
+        }
+    </style>
+</head>
+<body onload="verifierAuth()">
+    <h1>Scanner un Code QR</h1>
+    <div id="reader"></div>
+    <div id="result"></div>
+
+    <script>
+        function verifierAuth() {
+            if (!localStorage.getItem("username")) {
+                window.location.href = "index.html";
+            }
+        }
+
+        let scan = false;
+
+        function startQrScanner() {
+            if (scan) return;
+            const html5QrCode = new Html5Qrcode("reader");
+            scan = true;
+
+            const qrCodeSuccess = (decodeTexte) => {
+                document.getElementById("result").innerText = `Lien du QR Code : ${decodeTexte}`;
+                html5QrCode.stop().then(() => { scan = false; });
+            };
+
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccess)
+                .catch(err => { console.error("Erreur : ", err); scan = false; });
+        }
+
+        window.onload = startQrScanner;
+    </script>
+</body>
+</html>

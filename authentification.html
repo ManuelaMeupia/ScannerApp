@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Authentification</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #eef2f3; padding: 20px; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 10px; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; font-size: 16px; }
+        button { background:  rgb(0, 68, 255); color: white; cursor: pointer; }
+        input{
+            background-color: #e9f3f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Authentification requise</h2>
+        <p>Veuillez entrer vos informations pour accéder au scanner.</p>
+        <form id="auth-form">
+            <input type="email" id="auth-email" placeholder="Adresse mail" required />
+            <input type="password" id="auth-password" placeholder="Mot de passe" required />
+            <button type="submit">Valider</button>
+        </form>
+        <p id="authMessage"></p>
+    </div>
+
+    <script>
+        document.getElementById("auth-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const email = document.getElementById("auth-email").value;
+            const password = document.getElementById("auth-password").value;
+            const storedEmail = localStorage.getItem("username");
+            const storedPassword = localStorage.getItem("password");
+
+            if (email === storedEmail && password === storedPassword) {
+                window.location.href = "scanner.html"; 
+            } else {
+                document.getElementById("authMessage").innerText = "Identifiants incorrects.";
+            }
+        });
+    </script>
+</body>
+</html>
